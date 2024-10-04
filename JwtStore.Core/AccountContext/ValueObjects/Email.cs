@@ -23,6 +23,11 @@ public partial class Email : ValueObject {
 
     public string Address { get; } = string.Empty;
     public string Hash => Address.ToBase64();
+    public Verification Verification { get; private set; } = new();
+
+    public void ResetVerification() {
+        Verification = new();
+    }
 
     public static implicit operator string(Email email) => email.ToString()!;
     public static implicit operator Email(string address) => new(address);
