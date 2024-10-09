@@ -1,4 +1,5 @@
 ﻿using JwtStore.Core.SharedContext.ValueObjects;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 
 namespace JwtStore.Core.AccountContext.ValueObjects;
@@ -40,5 +41,27 @@ public class Password : ValueObject {
         string salt = Convert.ToBase64String(algorithm.Salt);
 
         return $"{iterations}{splitChar}{salt}{splitChar}{key}";
+    }
+
+    private static bool Verify(string hash, string password, short keySize = 32,
+        int iterations = 10000, char splitChar = '.') {
+
+        password += Configuration.Secrets.PasswordSaltKey;
+
+        string[] parts = hash.Split(splitChar, 3);
+
+        if (parts.Length != 3) return false;
+
+        int hashIterations = Convert.ToInt32(parts[0]);
+        byte[] salt = Convert.FromBase64String(parts[1]);
+        byte[] key = Convert.FromBase64String(parts[2]);
+        
+        if (hashIterations != iterations) return false;
+
+        using Rfc2898DeriveBytes algorithm = new(password, salt,
+    iterations, HashAlgorithmName.SHA256);
+        byte[] keyToCheck = algorithm.GetBytes(keySize);
+
+        return keyToCheck.SequenceEqual(key);
     }
 }
