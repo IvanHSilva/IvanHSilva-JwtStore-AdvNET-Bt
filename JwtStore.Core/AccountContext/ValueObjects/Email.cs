@@ -25,6 +25,8 @@ public partial class Email : ValueObject {
     public string Hash => Address.ToBase64();
     public Verification Verification { get; private set; } = new();
 
+    protected Email(){}
+
     public void ResetVerification() {
         Verification = new();
     }

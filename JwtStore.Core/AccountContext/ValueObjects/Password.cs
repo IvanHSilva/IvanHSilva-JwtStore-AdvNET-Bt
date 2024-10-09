@@ -12,6 +12,15 @@ public class Password : ValueObject {
     public string Hash { get; } = GeneratePassword();
     public string ResetCode { get; } = Guid.NewGuid().ToString("N")[..8].ToUpper();
 
+    protected Password(){}
+
+    public Password(string? text = null){
+        if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text))
+            text = GeneratePassword();
+
+        Hash = Hashing(text);
+    }
+
     private static string GeneratePassword(short lenght = 16, bool includeSpecial = true,
         bool upperCase = false) {
 

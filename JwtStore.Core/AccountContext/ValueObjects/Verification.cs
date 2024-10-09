@@ -7,6 +7,8 @@ public class Verification {
     public DateTime VerifiedAt { get; private set; } = DateTime.UtcNow;
     public bool IsActive => VerifiedAt < ExpiresAt;
 
+    public Verification(){}
+
     public void Verify(string code){
         if (IsActive) throw new Exception("Este item já foi ativado");
         if (ExpiresAt < DateTime.UtcNow) throw new Exception("Código expirado");
