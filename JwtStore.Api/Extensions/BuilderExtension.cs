@@ -1,6 +1,9 @@
 ﻿using JwtStore.Core;
 using JwtStore.Infra.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace JwtStore.Api.Extensions;
 
@@ -23,4 +26,22 @@ public static class BuilderExtension {
             Configuration.Database.ConnectionString,
             b => b.MigrationsAssembly("JWTStore.Api")));
     }
+
+    public static void AddJwtAuthentication(this WebApplicationBuilder builder) {
+        builder.Services
+            .AddAuthentication(a => {
+                a.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                a.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(a => {
+                a.RequireHttpsMetadata = false;
+                a.SaveToken = true;
+                a.TokenValidationParameters = new TokenValidationParameters {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.Secrets.JwtPrivateKey)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+        builder.Services.AddAuthorization();
+    }
+
 }
