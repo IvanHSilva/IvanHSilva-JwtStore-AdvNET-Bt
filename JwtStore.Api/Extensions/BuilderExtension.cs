@@ -24,7 +24,7 @@ public static class BuilderExtension {
     public static void AddDatabase(this WebApplicationBuilder builder) {
         builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer(
             Configuration.Database.ConnectionString,
-            b => b.MigrationsAssembly("JWTStore.Api")));
+            b => b.MigrationsAssembly("JwtStore.Api")));
     }
 
     public static void AddJwtAuthentication(this WebApplicationBuilder builder) {
