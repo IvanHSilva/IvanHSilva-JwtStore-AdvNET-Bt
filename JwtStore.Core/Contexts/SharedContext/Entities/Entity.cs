@@ -1,6 +1,7 @@
-﻿namespace JwtStore.Core.SharedContext.Entities;
+﻿namespace JwtStore.Core.Contexts.SharedContext.Entities;
 
-public abstract class Entity : IEquatable<Guid> {
+public abstract class Entity : IEquatable<Guid>
+{
 
     protected Entity() => Id = Guid.NewGuid();
 

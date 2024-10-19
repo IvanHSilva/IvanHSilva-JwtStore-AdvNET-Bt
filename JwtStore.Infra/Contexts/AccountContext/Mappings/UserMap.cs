@@ -1,14 +1,16 @@
-﻿using JwtStore.Core.AccountContext.Entities;
+﻿using JwtStore.Core.Contexts.AccountContext.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace JwtStore.Infra.AccountContext.Mappings;
+namespace JwtStore.Infra.Contexts.AccountContext.Mappings;
 
-public class UserMap : IEntityTypeConfiguration<User> {
-    public void Configure(EntityTypeBuilder<User> builder) {
-        
+public class UserMap : IEntityTypeConfiguration<User>
+{
+    public void Configure(EntityTypeBuilder<User> builder)
+    {
+
         builder.ToTable("User");
-        
+
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Name).HasColumnName("Name")
             .HasColumnType("NVARCHAR").HasMaxLength(100).IsRequired(true);
