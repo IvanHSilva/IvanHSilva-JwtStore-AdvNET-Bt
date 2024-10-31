@@ -20,7 +20,7 @@ public class Handler {
     }
 
     public async Task<Response> Handle(Request request, 
-        CancellationToken cancellation) {
+        CancellationToken cancellationToken) {
 
         #region RequestValidation
         
@@ -49,6 +49,17 @@ public class Handler {
             return new Response(ex.Message, 400);
         }
 
+        #endregion
+
+        #region ChecksIfUserExistsInDatabase
+
+        try {
+            bool exists = await _repository.AnyAsync(request.Email, cancellationToken);
+            if (exists)
+                return new Response("Este E-mail Já Foi Utilizado!", 400);
+        } catch {
+            return new Response("Falha ao Verificar E-Mail Cadastrado", 500);
+        }
         #endregion
     }
 }
