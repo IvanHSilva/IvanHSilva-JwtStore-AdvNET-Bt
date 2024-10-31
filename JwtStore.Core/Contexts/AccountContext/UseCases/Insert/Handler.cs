@@ -1,4 +1,7 @@
-﻿using JwtStore.Core.Contexts.AccountContext.UseCases.Contracts;
+﻿using Flunt.Notifications;
+using Flunt.Validations;
+using JwtStore.Core.Contexts.AccountContext.UseCases.Contracts;
+using JwtStore.Core.Contexts.SharedContext.UseCases;
 
 namespace JwtStore.Core.Contexts.AccountContext.UseCases.Insert; 
 
@@ -14,5 +17,16 @@ public class Handler {
     }
 
     public async Task<Response> Handle(Request request, 
-        CancellationToken cancellation) {}
+        CancellationToken cancellation) {
+
+        #region RequestValidation
+        try {
+            Contract<Notification> response = Specification.Ensure(request);
+            if (!response.IsValid) 
+                return new Response("Requisição Inválida!", 400, response.Notifications);
+        } catch {
+            return new Response("Não Foi Possível Validar a Requisição!", 500);
+        }
+        #endregion
+    }
 }
