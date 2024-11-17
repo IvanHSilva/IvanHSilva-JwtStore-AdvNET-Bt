@@ -2,11 +2,11 @@
 using Flunt.Validations;
 using JwtStore.Core.AccountContext.ValueObjects;
 using JwtStore.Core.Contexts.AccountContext.Entities;
-using JwtStore.Core.Contexts.AccountContext.UseCases.Contracts;
+using JwtStore.Core.Contexts.AccountContext.UseCases.Create.Contracts;
 using JwtStore.Core.Contexts.AccountContext.ValueObjects;
 using JwtStore.Core.Contexts.SharedContext.UseCases;
 
-namespace JwtStore.Core.Contexts.AccountContext.UseCases.Insert;
+namespace JwtStore.Core.Contexts.AccountContext.UseCases.Create;
 
 public class Handler {
 

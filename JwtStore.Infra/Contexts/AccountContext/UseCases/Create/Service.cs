@@ -1,10 +1,10 @@
 ﻿using JwtStore.Core;
 using JwtStore.Core.Contexts.AccountContext.Entities;
-using JwtStore.Core.Contexts.AccountContext.UseCases.Contracts;
 using SendGrid.Helpers.Mail;
 using SendGrid;
+using JwtStore.Core.Contexts.AccountContext.UseCases.Create.Contracts;
 
-namespace JwtStore.Infra.Contexts.AccountContext.UseCases.Insert;
+namespace JwtStore.Infra.Contexts.AccountContext.UseCases.Create;
 
 public class Service : IService {
 

@@ -10,7 +10,7 @@ namespace JwtStore.Api.Extensions;
 public static class BuilderExtension {
 
     public static void AddConfiguration(this WebApplicationBuilder builder){
-        Configuration.Database.ConnectionString =
+        Configuration.DatabaseConfiguration.ConnectionString =
                 builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
 
         Configuration.Secrets.ApiKey =
@@ -23,7 +23,7 @@ public static class BuilderExtension {
 
     public static void AddDatabase(this WebApplicationBuilder builder) {
         builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer(
-            Configuration.Database.ConnectionString,
+            Configuration.DatabaseConfiguration.ConnectionString,
             b => b.MigrationsAssembly("JwtStore.Api")));
     }
 
