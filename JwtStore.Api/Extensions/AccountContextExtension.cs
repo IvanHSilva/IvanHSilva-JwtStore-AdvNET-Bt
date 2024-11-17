@@ -1,23 +1,28 @@
-﻿namespace JwtStore.Api.Extensions; 
+﻿using JwtStore.Core.Contexts.AccountContext.UseCases.Create;
+using JwtStore.Core.Contexts.AccountContext.UseCases.Create.Contracts;
+using JwtStore.Infra.Contexts.AccountContext.UseCases.Create;
+using MediatR;
+
+namespace JwtStore.Api.Extensions; 
 
 public static class AccountContextExtension {
     
     public static void AddAccountContext(this WebApplicationBuilder builder){
         #region Create
-        builder.Services.AddTransient<
-            JwtStore.Core.Contexts.AccountContext.UseCases.Create.Contracts.IRepository,
-            JwtStore.Infra.Contexts.AccountContext.UseCases.Create.Repository
-            >();
+        builder.Services.AddTransient<IRepository, Repository>();
 
-        builder.Services.AddTransient<
-            JwtStore.Core.Contexts.AccountContext.UseCases.Create.Contracts.IService,
-            JwtStore.Infra.Contexts.AccountContext.UseCases.Create.Service
-            >();
+        builder.Services.AddTransient<IService, Service>();
         #endregion
     }
 
-    public static void MapAccountEndpoints(this WebApplication app){
+    public static async void MapAccountEndpoints(this WebApplication app){
         #region Create
+        app.MapPost("api/users", async(
+            Request request, IRequestHandler<Request, Response> handler) => {
+                Response result = await handler.Handle(request, new CancellationToken());
+                return result.IsSuccess ? Results.Created($"api/users/{result.Data!.Id}", result) 
+                : Results.Json(result, statusCode: result.Status);
+        });
         #endregion
     }
 }
