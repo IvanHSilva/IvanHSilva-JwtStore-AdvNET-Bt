@@ -16,5 +16,8 @@ public static class AccountContextExtension {
         #endregion
     }
 
-    public static void MapAccountEndpoints(this WebApplication app) { }
+    public static void MapAccountEndpoints(this WebApplication app){
+        #region Create
+        #endregion
+    }
 }
