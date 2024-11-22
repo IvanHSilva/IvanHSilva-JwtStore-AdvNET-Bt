@@ -9,16 +9,10 @@ using MediatR;
 
 namespace JwtStore.Core.Contexts.AccountContext.UseCases.Create;
 
-public class Handler : IRequestHandler<Request, Response> {
+public class Handler(IRepository repository, IService service) : IRequestHandler<Request, Response> {
 
-    private readonly IRepository _repository;
-    private readonly IService _service;
-
-    public Handler(IRepository repository, IService service) {
-
-        _repository = repository;
-        _service = service;
-    }
+    private readonly IRepository _repository = repository;
+    private readonly IService _service = service;
 
     public async Task<Response> Handle(Request request,
         CancellationToken cancellationToken) {

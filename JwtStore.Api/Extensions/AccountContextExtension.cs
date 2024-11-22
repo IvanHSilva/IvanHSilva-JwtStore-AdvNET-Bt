@@ -15,7 +15,7 @@ public static class AccountContextExtension {
         #endregion
     }
 
-    public static async void MapAccountEndpoints(this WebApplication app){
+    public static void MapAccountEndpoints(this WebApplication app){
         #region Create
         app.MapPost("api/users", async(
             Request request, IRequestHandler<Request, Response> handler) => {
