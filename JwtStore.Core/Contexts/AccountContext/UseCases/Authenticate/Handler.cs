@@ -1,89 +1,80 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
-using JwtStore.Core.AccountContext.ValueObjects;
 using JwtStore.Core.Contexts.AccountContext.Entities;
-using JwtStore.Core.Contexts.AccountContext.UseCases.Create.Contracts;
-using JwtStore.Core.Contexts.AccountContext.ValueObjects;
-using JwtStore.Core.Contexts.SharedContext.UseCases;
+using JwtStore.Core.Contexts.AccountContext.UseCases.Authenticate.Contracts;
 using MediatR;
 
 namespace JwtStore.Core.Contexts.AccountContext.UseCases.Authenticate;
 
-public class Handler(IRepository repository, IService service) : IRequestHandler<Request, Response> {
-
+public class Handler(IRepository repository) : IRequestHandler<Request, Response> {
+    
     private readonly IRepository _repository = repository;
-    private readonly IService _service = service;
 
-    public async Task<Response> Handle(Request request,
-        CancellationToken cancellationToken) {
-
+    public async Task<Response> Handle(Request request, CancellationToken cancellationToken) {
+        
         #region RequestValidation
 
         try {
-            Contract<Notification> response = Specification.Ensure(request);
-            if (!response.IsValid)
-                return new Response("Requisição Inválida!", 400, response.Notifications);
+            Contract<Notification> res = Specification.Ensure(request);
+            if (!res.IsValid)
+                return new Response("Requisição inválida", 400, res.Notifications);
         }
         catch {
-            return new Response("Não Foi Possível Validar a Requisição!", 500);
+            return new Response("Não foi possível validar sua requisição", 500);
         }
 
         #endregion
 
+        #region ProfileRecover
 
-        #region ObjectsGenerate
-
-        Email email;
-        Password password;
         User user;
-
         try {
-            email = new Email(request.Email);
-            password = new Password(request.Password);
-            user = new User(request.Name, email, password);
+            user = await _repository.GetUserByEmailAsync(request.Email, cancellationToken);
+            if (user is null)
+                return new Response("Perfil não encontrado", 404);
         }
-        catch (Exception ex) {
-            return new Response(ex.Message, 400);
+        catch (Exception) {
+            return new Response("Não foi possível recuperar seu perfil", 500);
         }
 
         #endregion
 
+        #region PasswordCheck
 
-        #region ChecksIfUserExistsInDatabase
+        if (!user.Password.Challenge(request.Password))
+            return new Response("Usuário ou senha inválidos", 400);
+
+        #endregion
+
+        #region VerifiedAccountCheck
 
         try {
-            bool exists = await _repository.AnyAsync(request.Email, cancellationToken);
-            if (exists)
-                return new Response("Este E-mail Já Foi Utilizado!", 400);
+            if (!user.Email.Verification.IsActive)
+                return new Response("Conta inativa", 400);
         }
         catch {
-            return new Response("Falha ao Verificar E-Mail Cadastrado", 500);
+            return new Response("Não foi possível verificar seu perfil", 500);
         }
+
         #endregion
 
-
-        #region DataPersists
+        #region DataReturn
 
         try {
-            await _repository.SaveAsync(user, cancellationToken);
+            ResponseData data = new()
+            {
+                Id = user.Id.ToString(),
+                Name = user.Name,
+                Email = user.Email,
+                Roles = []
+            };
+
+            return new Response(string.Empty, data);
         }
         catch {
-            return new Response("Falha ao Persistir Dados", 500);
+            return new Response("Não foi possível obter os dados do perfil", 500);
         }
+
         #endregion
-
-
-        #region SendRequestEmailActivation
-
-        try {
-            await _service.SendVerificationEmailAsync(user, cancellationToken);
-        }
-        catch {
-            //return new Response("Falha ao Persistir Dados", 500);
-        }
-        #endregion
-
-        return new Response("Conta Criada com Sucesso", new ResponseData(
-            user.Id, user.Name, user.Email));
     }
 }
