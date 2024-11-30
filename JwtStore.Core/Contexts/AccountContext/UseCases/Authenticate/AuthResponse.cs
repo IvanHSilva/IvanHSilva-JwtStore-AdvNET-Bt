@@ -2,11 +2,11 @@
 
 namespace JwtStore.Core.Contexts.AccountContext.UseCases.Authenticate;
 
-public class Response : SharedContext.UseCases.Response {
+public class AuthResponse : SharedContext.UseCases.Response {
 
-    protected Response() { }
+    protected AuthResponse() { }
 
-    public Response(string message, int status,
+    public AuthResponse(string message, int status,
         IEnumerable<Notification>? notifications = null) {
 
         Message = message;
@@ -14,7 +14,7 @@ public class Response : SharedContext.UseCases.Response {
         Notifications = notifications;
     }
 
-    public Response(string message, ResponseData data) {
+    public AuthResponse(string message, ResponseData data) {
 
         Message = message;
         Status = 201;
