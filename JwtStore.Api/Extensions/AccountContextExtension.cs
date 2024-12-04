@@ -1,5 +1,4 @@
-﻿//using JwtStore.Core.Contexts.AccountContext.UseCases.Create;
-using JwtStore.Core.Contexts.AccountContext.UseCases.Authenticate;
+﻿using JwtStore.Core.Contexts.AccountContext.UseCases.Authenticate;
 using JwtStore.Core.Contexts.AccountContext.UseCases.Authenticate.Contracts;
 using JwtStore.Core.Contexts.AccountContext.UseCases.Create;
 using JwtStore.Core.Contexts.AccountContext.UseCases.Create.Contracts;
