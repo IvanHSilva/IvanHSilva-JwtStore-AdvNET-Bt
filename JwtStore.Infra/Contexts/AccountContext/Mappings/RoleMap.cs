@@ -9,6 +9,7 @@ public class RoleMap : IEntityTypeConfiguration<Role> {
     public void Configure(EntityTypeBuilder<Role> builder) {
 
         builder.ToTable("Role");
+        builder.HasKey(r => r.Id);
 
         builder.Property(r => r.Name).HasColumnName("Name")
             .HasColumnType("NVARCHAR").HasMaxLength(120).IsRequired(true);
