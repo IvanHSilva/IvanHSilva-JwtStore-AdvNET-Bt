@@ -66,7 +66,7 @@ public class AuthHandler(IAuthRepository repository) : IRequestHandler<AuthReque
                 Id = user.Id.ToString(),
                 Name = user.Name,
                 Email = user.Email,
-                Roles = []
+                Roles = user.Roles.Select(r => r.Name).ToArray()
             };
 
             return new AuthResponse(string.Empty, data);
