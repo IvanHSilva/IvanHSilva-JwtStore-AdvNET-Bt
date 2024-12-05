@@ -46,7 +46,7 @@ public static class AccountContextExtension {
             AuthResponse result = await handler.Handle(request, new CancellationToken());
             return result.IsSuccess ? Results.Ok(result)
             : Results.Json(result, statusCode: result.Status);
-        });
+        }).RequireAuthorization("Admin");
         #endregion
     }
 }
