@@ -11,6 +11,6 @@ public class AuthRepository(AppDbContext context) : IAuthRepository {
     private readonly AppDbContext _context = context;
 
     public async Task<User> GetUserByEmailAsync(string email, CancellationToken cancellationToken) =>
-        await _context.Users.AsNoTracking().FirstAsync(u => u.Email.Address == email, cancellationToken); 
+        await _context.Users.AsNoTracking().Include(u => u.Roles).FirstAsync(u => u.Email.Address == email, cancellationToken); 
 
 }
